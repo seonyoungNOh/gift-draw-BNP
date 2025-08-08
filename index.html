@@ -1,1 +1,401 @@
-<h1>임시 HTML</h1>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BNP 선물 준비</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Square&display=swap" rel="stylesheet" />
+<style>
+  body {
+    font-family: 'Nanum Square', 'Arial', sans-serif;
+    background: #fff8f0;
+    padding: 20px 10px;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    font-weight: 800;
+    color: #333;
+  }
+
+  #user-input {
+    margin-bottom: 20px;
+  }
+
+  #user-input input {
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 18px;
+    border: 2px solid #f4d35e;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #user-input input:focus {
+    border-color: #f9a03f;
+  }
+
+  #user-input button {
+    margin-left: 12px;
+    padding: 10px 18px;
+    font-size: 18px;
+    font-weight: 700;
+    background: #f4d35e;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #333;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+  }
+  #user-input button:active {
+    background: #f9a03f;
+    color: white;
+  }
+
+  #message {
+    height: 24px;
+    margin-bottom: 10px;
+    color: #f44336;
+    font-weight: 700;
+    min-height: 24px;
+  }
+
+  #cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 10px;
+  }
+
+  .card {
+    width: 150px;
+    height: 210px;
+    perspective: 1100px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    z-index: 1;
+    border-radius: 18px;
+  }
+  .card.selected {
+    transform: scale(1.4) translateY(-20px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+    z-index: 999;
+  }
+
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 18px;
+  }
+
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .card-front {
+    background: linear-gradient(135deg, #f4d35e, #f9a03f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 70px;
+    color: #fff;
+    user-select: none;
+    border: 3px solid #f4d35e;
+  }
+
+  .card-front:hover {
+    filter: brightness(1.05);
+  }
+
+  .card-back {
+    background: #fff;
+    color: #333;
+    transform: rotateY(180deg);
+    padding: 20px 10px 15px 10px;
+    box-sizing: border-box;
+    border: 3px solid #f4d35e;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+  }
+
+  .gift-icon {
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 8px;
+    user-select: none;
+  }
+
+  .gift-type {
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+  }
+
+  .picker-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #666;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .gift-result {
+    font-weight: 700;
+    font-size: 16px;
+    color: #f9a03f;
+    user-select: none;
+    white-space: nowrap;
+    margin-top: 6px;
+  }
+
+  #reset-section {
+    margin-top: 30px;
+    display: none;
+  }
+
+  #reset-section input {
+    width: 160px;
+    padding: 8px 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #reset-section input:focus {
+    border-color: #f4d35e;
+  }
+
+  #reset-section button {
+    margin-left: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 16px;
+    background: #f4d35e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+  }
+  #reset-section button:active {
+    background: #f9a03f;
+    color: white;
+  }
+</style>
+</head>
+<body>
+  <h1>BNP 선물 준비</h1>
+
+  <div id="user-input">
+    <input type="text" id="username" placeholder="이름을 입력하세요" autocomplete="off" />
+    <button id="start-btn">시작</button>
+  </div>
+
+  <div id="message"></div>
+
+  <div id="cards-container"></div>
+
+  <div id="reset-section">
+    <input type="password" id="reset-password" placeholder="비밀번호 입력" autocomplete="off" />
+    <button id="reset-btn">초기화</button>
+  </div>
+
+<script>
+  const cardsData = [
+    { type: '다이아몬드', icon: '💎', positive: true },
+    { type: '네잎클로버', icon: '🍀', positive: true },
+    { type: '별', icon: '⭐', positive: true },
+    { type: '사랑의 하트', icon: '❤️', positive: true },
+    { type: '폭탄', icon: '💣', positive: false },
+    { type: '귀여운 대변', icon: '💩', positive: false },
+    { type: '해골', icon: '💀', positive: false },
+    { type: '뱀', icon: '🐍', positive: false }
+  ];
+
+  let cards = [];
+  let userName = '';
+  let userPickedIndex = null;
+
+  const usernameInput = document.getElementById('username');
+  const startBtn = document.getElementById('start-btn');
+  const messageDiv = document.getElementById('message');
+  const cardsContainer = document.getElementById('cards-container');
+  const resetSection = document.getElementById('reset-section');
+  const resetInput = document.getElementById('reset-password');
+  const resetBtn = document.getElementById('reset-btn');
+
+  function loadCards() {
+    const saved = localStorage.getItem('giftCards');
+    if(saved) {
+      cards = JSON.parse(saved);
+    } else {
+      cards = shuffle(cardsData).map(card => ({...card, pickedBy: null}));
+      localStorage.setItem('giftCards', JSON.stringify(cards));
+    }
+  }
+
+  function saveCards() {
+    localStorage.setItem('giftCards', JSON.stringify(cards));
+  }
+
+  function shuffle(array) {
+    const arr = array.slice();
+    for(let i = arr.length -1; i>0; i--) {
+      const j = Math.floor(Math.random() * (i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function loadUserPick() {
+    const savedUser = localStorage.getItem('currentUserName');
+    const savedPick = localStorage.getItem('userPickedIndex');
+    if(savedUser) {
+      userName = savedUser;
+      usernameInput.value = userName;
+      if(savedPick !== null) {
+        userPickedIndex = parseInt(savedPick, 10);
+      }
+    }
+  }
+
+  function saveUserPick() {
+    localStorage.setItem('currentUserName', userName);
+    if(userPickedIndex !== null) {
+      localStorage.setItem('userPickedIndex', userPickedIndex);
+    }
+  }
+
+  function renderCards() {
+    cardsContainer.innerHTML = '';
+
+    cards.forEach((card, idx) => {
+      const cardDiv = document.createElement('div');
+      cardDiv.classList.add('card');
+      if(card.pickedBy !== null) {
+        cardDiv.classList.add('flipped');
+      }
+      if(userPickedIndex === idx) {
+        cardDiv.classList.add('selected');
+      }
+
+      const cardInner = document.createElement('div');
+      cardInner.classList.add('card-inner');
+
+      const cardFront = document.createElement('div');
+      cardFront.classList.add('card-front');
+      cardFront.textContent = '🎁';
+
+      const cardBack = document.createElement('div');
+      cardBack.classList.add('card-back');
+
+      if(userPickedIndex === idx) {
+        cardBack.innerHTML = `
+          <div class="gift-icon">${card.icon}</div>
+          <div class="gift-result">${card.positive ? '쓸모있는 선물' : '쓸모없는 선물'}</div>
+        `;
+      } else if(card.pickedBy !== null) {
+        cardBack.innerHTML = `
+          <div class="gift-icon">🎁</div>
+          <div class="picker-name">${card.pickedBy}님이 선택</div>
+        `;
+      } else {
+        cardBack.textContent = '';
+      }
+
+      cardInner.appendChild(cardFront);
+      cardInner.appendChild(cardBack);
+      cardDiv.appendChild(cardInner);
+
+      if(card.pickedBy === null) {
+        cardDiv.addEventListener('click', () => {
+          if(!userName) {
+            showMessage('먼저 이름을 입력하고 시작 버튼을 눌러주세요.');
+            return;
+          }
+          if(userPickedIndex !== null) {
+            showMessage('한 사람당 하나의 카드만 선택할 수 있습니다.');
+            return;
+          }
+          card.pickedBy = userName;
+          userPickedIndex = idx;
+          saveCards();
+          saveUserPick();
+          renderCards();
+          showMessage('');
+          resetSection.style.display = 'block'; // 카드 뽑은 후 초기화 버튼 보이기
+        });
+      } else {
+        cardDiv.style.cursor = 'default';
+      }
+
+      cardsContainer.appendChild(cardDiv);
+    });
+  }
+
+  function showMessage(msg) {
+    messageDiv.textContent = msg;
+  }
+
+  // 초기 상태: 카드 컨테이너 숨김, 초기화 버튼 숨김
+  cardsContainer.style.display = 'none';
+  resetSection.style.display = 'none';
+
+  startBtn.addEventListener('click', () => {
+    const val = usernameInput.value.trim();
+    if(!val) {
+      showMessage('이름을 입력하세요.');
+      return;
+    }
+    userName = val;
+    loadCards();      // 이름 입력 후 카드 상태 로드
+    loadUserPick();
+    usernameInput.disabled = true;
+    startBtn.disabled = true;
+    showMessage('');
+    cardsContainer.style.display = 'flex';
+    renderCards();
+    resetSection.style.display = 'block';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    const pwd = resetInput.value.trim();
+    if(pwd === '94601641') {
+      localStorage.removeItem('giftCards');
+      localStorage.removeItem('currentUserName');
+      localStorage.removeItem('userPickedIndex');
+      location.reload();
+    } else {
+      alert('비밀번호가 틀렸습니다.');
+    }
+  });
+</script>
+</body>
+</html>
